@@ -15,7 +15,26 @@ function Home() {
   const dispatch = useDispatch();
   const { list, isLoading, isError } = useSelector((state) => state.app);
 
-  const Pagination = ({ total, current, callback }) => {};
+  const Pagination = ({ total, current, callback }) => {
+    const pages = new Array(total).fill(0).map((_, i) => {
+      if (current === i + 1) {
+        return (
+          <Button key={i} diabled variant="contained">
+            {i + 1}
+          </Button>
+        );
+      } else {
+        return (
+          <Button onClick={() => callback(i + 1)} key={i} variant="contained">
+            {i + 1}
+          </Button>
+        );
+      }
+    });
+
+    return pages;
+  };
+  const [page, setPage] = useState(1);
   //const history=useHistory()
   const handleSearch = () => {
     //  history.push("/search")
@@ -50,7 +69,9 @@ function Home() {
   if (isLoading) {
     return <div>...loading</div>;
   }
-
+  const handlePagination = (page) => {
+    setPage(page);
+  };
   return (
     <div>
       <TextField
@@ -62,11 +83,14 @@ function Home() {
       />
       <Button
         onClick={handleSearch}
-        sx={{ marginLeft: "20px", marginTop: "4px" }}
+        sx={{ marginLeft: "20px", marginTop: "4px", marginBottom: "10px" }}
         variant="contained"
       >
         Search
       </Button>
+      <div>
+        <Pagination callback={handlePagination} total={5} current={page} />
+      </div>
       <Grid sx={{ marginTop: "10px" }} container spacing={2}>
         {list?.map((item) => {
           return (
